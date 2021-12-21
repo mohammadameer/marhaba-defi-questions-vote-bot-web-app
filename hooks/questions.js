@@ -7,7 +7,7 @@ axios.defaults.headers.common["Content-Type"] =
 const mainUrl =
   process.env.NODE_ENV == "development"
     ? "http://localhost:3000/questions/"
-    : "https://marhaba-defi-questions-vote-bo.herokuapp.com/questions/";
+    : "https://mrhb-bot-api.herokuapp.com/questions/";
 
 export const useQuestions = () =>
   useQuery("questions", () => axios.get(mainUrl).then(({ data }) => data));
