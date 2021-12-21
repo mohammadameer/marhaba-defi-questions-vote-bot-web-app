@@ -4,7 +4,10 @@ import { useMutation, useQuery } from "react-query";
 axios.defaults.headers.common["Content-Type"] =
   "application/x-www-form-urlencoded";
 
-const mainUrl = "http://localhost:3000/questions/";
+const mainUrl =
+  process.env.NODE_ENV == "development"
+    ? "http://localhost:3000/questions/"
+    : "https://marhaba-defi-questions-vote-bo.herokuapp.com/";
 
 export const useQuestions = () =>
   useQuery("questions", () => axios.get(mainUrl).then(({ data }) => data));
