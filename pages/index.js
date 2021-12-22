@@ -1,12 +1,33 @@
-import { Box, Button, Fade, Skeleton, Spinner, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Box,
+  Button,
+  Fade,
+  Skeleton,
+  Spinner,
+  Switch,
+  Text,
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import Question from "../components/Question";
 import { useQuestions } from "../hooks/questions";
 
 export default function Home() {
-  const { data: questions, isLoading, refetch } = useQuestions();
-
+  const [onlyNotAnswered, setOnlyNotAnswered] = useState(false);
+  const [onlySaved, setOnlySaved] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState();
+
+  const {
+    data: questions,
+    isLoading,
+    refetch,
+  } = useQuestions({
+    saved: onlySaved,
+    answered: onlyNotAnswered ? false : true,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [onlyNotAnswered, onlySaved]);
 
   return (
     <Box p="2">
@@ -16,6 +37,24 @@ export default function Home() {
         </Text>
         <Button onClick={refetch}>Refetch</Button>
       </Box>
+
+      <Box display="flex" mt="4">
+        <Box display="flex" mr="4">
+          <Switch
+            isChecked={onlyNotAnswered}
+            onChange={() => setOnlyNotAnswered(!onlyNotAnswered)}
+          />
+          <Text ml="2">Only Not Answered</Text>
+        </Box>
+        <Box display="flex">
+          <Switch
+            isChecked={onlySaved}
+            onChange={() => setOnlySaved(!onlySaved)}
+          />
+          <Text ml="2">Saved</Text>
+        </Box>
+      </Box>
+
       {!isLoading ? (
         <Box>
           {questions?.length > 0 ? (

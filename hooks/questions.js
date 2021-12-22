@@ -9,8 +9,10 @@ const mainUrl =
     ? "http://localhost:3000/questions/"
     : "https://mrhb-bot-api.herokuapp.com/questions/";
 
-export const useQuestions = () =>
-  useQuery("questions", () => axios.get(mainUrl).then(({ data }) => data));
+export const useQuestions = (data) =>
+  useQuery("questions", () =>
+    axios.get(`${mainUrl}`, { params: data }).then(({ data }) => data)
+  );
 
 export const useDeleteQuestion = () =>
   useMutation((number) =>
@@ -18,6 +20,6 @@ export const useDeleteQuestion = () =>
   );
 
 export const useUpdateQuestion = () =>
-  useMutation(({ number, answer }) =>
-    axios.put(mainUrl + number, { answer }).then(({ data }) => data)
+  useMutation(({ number, answer, saved }) =>
+    axios.put(mainUrl + number, { answer, saved }).then(({ data }) => data)
   );

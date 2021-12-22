@@ -1,4 +1,4 @@
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -33,7 +33,62 @@ const Question = ({
         p="2"
         position="relative"
       >
-        <Text fontSize="xl">{question?.question}</Text>
+        <Box display="flex" justifyContent="space-between">
+          <Text fontSize="xl">{question?.question}</Text>
+          <Box display="flex" flexDir={["column", "column", "row"]}>
+            <IconButton
+              icon={<DeleteIcon />}
+              disabled={
+                updating ||
+                (deleting && selectedQuestion?.number == question?.number)
+              }
+              onClick={() => {
+                setSelectedQuestion(question);
+                deleteQuestion(question?.number, {
+                  onSuccess: () => {
+                    refetch();
+                    setSelectedQuestion(null);
+                    toast({
+                      title: "question has been removed.",
+                      status: "success",
+                      duration: 9000,
+                      isClosable: true,
+                    });
+                  },
+                });
+              }}
+            />
+            <IconButton
+              icon={
+                <StarIcon color={question.saved ? "yellow.400" : "gray.400"} />
+              }
+              ml={["0", "0", "2"]}
+              mt={["2", "2", "0"]}
+              disabled={
+                deleting ||
+                (updating && selectedQuestion?.number == question?.number)
+              }
+              onClick={() => {
+                setSelectedQuestion(question);
+                updateQuestion(
+                  { saved: !question.saved, number: question.number },
+                  {
+                    onSuccess: () => {
+                      refetch();
+                      setSelectedQuestion(null);
+                      toast({
+                        title: "question has been updated.",
+                        status: "success",
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                    },
+                  }
+                );
+              }}
+            />
+          </Box>
+        </Box>
         <Text fontSize="sm">votes: {question?.votes}</Text>
         <Textarea
           mt="4"
@@ -61,7 +116,7 @@ const Question = ({
                   setSelectedQuestion(null);
 
                   toast({
-                    title: "questions has been updated.",
+                    title: "question has been updated.",
                     status: "success",
                     duration: 9000,
                     isClosable: true,
@@ -73,31 +128,6 @@ const Question = ({
         >
           Update
         </Button>
-        <IconButton
-          icon={<DeleteIcon />}
-          position="absolute"
-          right="2"
-          top="2"
-          disabled={
-            updating ||
-            (deleting && selectedQuestion?.number == question?.number)
-          }
-          onClick={() => {
-            setSelectedQuestion(question);
-            deleteQuestion(question?.number, {
-              onSuccess: () => {
-                refetch();
-                setSelectedQuestion(null);
-                toast({
-                  title: "questions has been removed.",
-                  status: "success",
-                  duration: 9000,
-                  isClosable: true,
-                });
-              },
-            });
-          }}
-        />
       </Box>
     </Box>
   );
